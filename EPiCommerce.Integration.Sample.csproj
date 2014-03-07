@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C6B07F25-C86D-4B16-BE5F-269DE1BD9545}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EPiCommerce.Integration.Sample</RootNamespace>
+    <AssemblyName>EPiCommerce.Integration.Sample</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AjaxControlToolkit">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\AjaxControlToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>packages\Castle.Core.3.2.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.DynamicProxy">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\Castle.DynamicProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>packages\Castle.Windsor.3.2.0\lib\net45\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>packages\Common.Logging.1.2.0\lib\1.0\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.EntLib">
+      <HintPath>packages\Common.Logging.EntLib.1.2.0\lib\2.0\Common.Logging.EntLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net">
+      <HintPath>packages\Common.Logging.Log4Net.1.2.0\lib\2.0\Common.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.NLog">
+      <HintPath>packages\Common.Logging.NLog.1.2.0\lib\2.0\Common.Logging.NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\DotNetOpenAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.ApplicationModules">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.ApplicationModules.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.BaseLibrary">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.BaseLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Business.Commerce">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\EPiServer.Business.Commerce.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Commerce.UI">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\EPiServer.Commerce.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Cache">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Cache.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.ComponentArt.Web.UI">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.ComponentArt.Web.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Configuration">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Criteria">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Criteria.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Data">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.EventCounter">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.EventCounter.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Framework">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Framework.Exceptions">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Framework.Exceptions.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Framework.Impl">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Framework.Impl.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Gadgets">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\EPiServer.Common.Gadgets.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Security">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Web">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Web.Authorization">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Web.Authorization.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Common.Web.Authorization.Multiplexing">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\EPiServer.Common.Web.Authorization.Multiplexing.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Configuration">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Data">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Data.Cache">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.Data.Cache.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Enterprise">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.Enterprise.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Events">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Framework">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.ImageLibrary">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.ImageLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Implementation">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.Implementation.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Licensing">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.Licensing.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.LinkAnalyzer">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.LinkAnalyzer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Shell">
+      <HintPath>packages\EPiServer.Framework.7.5.1003.0\lib\net40\EPiServer.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.Web.WebControls">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.Web.WebControls.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.WorkflowFoundation">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.WorkflowFoundation.dll</HintPath>
+    </Reference>
+    <Reference Include="EPiServer.XForms">
+      <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.XForms.dll</HintPath>
+    </Reference>
+    <Reference Include="FluentAssertions">
+      <HintPath>packages\FluentAssertions.2.2.0.0\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\Iesi.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="LitS3">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\LitS3.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net">
+      <HintPath>packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications">
+      <HintPath>packages\Machine.Specifications.0.7.0\lib\net45\Machine.Specifications.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications.Clr4">
+      <HintPath>packages\Machine.Specifications.0.7.0\lib\net45\Machine.Specifications.Clr4.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.BusinessFoundation">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.BusinessFoundation.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.BusinessFoundation.Data">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.BusinessFoundation.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce.Marketing.Validators">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.Marketing.Validators.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce.Plugins.Payment">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.Plugins.Payment.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce.Plugins.Shipping">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.Plugins.Shipping.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce.Website">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.Website.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce.Workflow">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Commerce.Workflow.Activities">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Commerce.Workflow.Activities.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.DataProvider">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.DataProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.FileUploader">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.FileUploader.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Library.AmazonProviders">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Library.AmazonProviders.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.MetaDataPlus">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.MetaDataPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Search">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Search.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Search.Extensions">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Search.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.Search.LuceneSearchProvider">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.Search.LuceneSearchProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.SqlDataProvider">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.SqlDataProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Mediachase.WebConsoleLib">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.WebConsoleLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Microsoft.ReportViewer.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.SqlServer.Scripting.11.0.2100.61\lib\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.SqlServer.Scripting.11.0.2100.61\lib\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.SqlServer.Scripting.11.0.2100.61\lib\Microsoft.SqlServer.Smo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate">
+      <HintPath>packages\EPiServer.CommonFramework.7.5.446.1\lib\net40\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="nsoftware.IBizPay">
+      <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\nsoftware.IBizPay.dll</HintPath>
+    </Reference>
+    <Reference Include="StructureMap">
+      <HintPath>packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.Razor.2.0.20710.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Example commerce spec.cs" />
+    <Compile Include="TestSupport\AssemblyContext.cs" />
+    <Compile Include="TestSupport\CatalogTestHelper.cs" />
+    <Compile Include="TestSupport\Database.cs" />
+    <Compile Include="TestSupport\EPiServerInitializer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSupport\TestBase.cs" />
+    <Compile Include="TestSupport\TestHostingEnvironment.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sql\EPiServerCommon.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="app.config" />
+    <Content Include="Configs\baf.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\baf.data.manager.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\baf.data.metaobject.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\baf.library.folders.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.app.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.asset.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.catalog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.cms.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.customer.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.customization.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.marketing.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.order.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.security.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.ssl.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\ecf.workflow.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Mediachase.Search.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configs\Mediachase.Search.Filters.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="sql\ECFDatabase_Create.sql">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>copy $(ProjectDir)License.config $(TargetDir)</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
