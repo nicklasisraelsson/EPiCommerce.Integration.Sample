@@ -18,7 +18,7 @@ In order to run these tests you need the following:
 Any new specs must inherit from the EPiCommerce.Integration.Sample.TestSupport.TestBase class as can be seen from the included example spec.
 
 ```
-using EPiCommerceIntegration.TestSupport;
+using EPiCommerce.Integration.Sample.TestSupport;
 
 public class When_saving_a_new_entry_under_a_catalog : TestBase
 {
