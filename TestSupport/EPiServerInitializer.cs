@@ -7,11 +7,18 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web.Routing;
+using EPiServer;
 using EPiServer.Commerce.Routing;
+using EPiServer.Core;
 using EPiServer.Data.Configuration;
+using EPiServer.DataAccess;
 using EPiServer.Framework.Configuration;
 using EPiServer.Framework.Initialization;
+using EPiServer.Security;
+using EPiServer.ServiceLocation;
+using EPiServer.Web;
 using EPiServer.Web.Hosting;
+using InitializationModule = EPiServer.Framework.Initialization.InitializationModule;
 
 namespace EPiCommerce.Integration.Sample.TestSupport
 {
@@ -23,6 +30,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             SetupConfig();
             SetupHostingEnvironment(applicationPath);
             InitializationModule.FrameworkInitialization(HostType.TestFramework);
+            SetupSiteDefinition();
             CatalogRouteHelper.MapDefaultHierarchialRouter(RouteTable.Routes, false);
         }
 
@@ -86,6 +94,30 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             };
             var fallbackVpp = new VirtualPathNonUnifiedProvider("fallbackMapPathVpp", fallbackMapPathVppConfig);
             hostingEnvironment.RegisterVirtualPathProvider(fallbackVpp);
+        }
+
+        private static void SetupSiteDefinition()
+        {
+            var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
+            var siteDefinitionRepository = ServiceLocator.Current.GetInstance<SiteDefinitionRepository>();
+            var siteName = "IntegrationTestSite";
+            var oldSiteDefinition = siteDefinitionRepository.Get(siteName);
+            if (oldSiteDefinition != null)
+            {
+                siteDefinitionRepository.Delete(oldSiteDefinition.Id);
+            }
+            var startPage = contentRepository.GetDefault<StartPage>(ContentReference.RootPage);
+            startPage.Name = "Start page";
+            var startPageReference = contentRepository.Save(startPage, SaveAction.Publish, AccessLevel.NoAccess);
+            var siteDefinition = new SiteDefinition
+            {
+                Name = siteName,
+                StartPage = startPageReference.ToReferenceWithoutVersion(),
+                SiteUrl = new Uri("http://localhost/")
+            };
+            siteDefinition.Hosts.Add(new HostDefinition { Name = siteDefinition.SiteUrl.Authority });
+            siteDefinition.Hosts.Add(new HostDefinition { Name = SiteDefinition.WildcardHostName });
+            siteDefinitionRepository.Save(siteDefinition);
         }
     }
 }

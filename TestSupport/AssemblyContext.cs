@@ -36,7 +36,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             // We need to make sure the OrderContext.Current has been executed before doing a snapshot.
             var thisCallIsOnlyUsedToMakeSureTheOrderContextIsAutomaticallyInstalled = OrderContext.Current;
             CatalogTestHelper.Initialize();
-            CreateStartPage();
             Database.CreateSnapshots(applicationPath);
         }
 
@@ -63,17 +62,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
                 Path.Combine(applicationPath,
                              @"..\..\packages\EPiServer.CMS.Core." + cmsVersion + @"\tools\EPiServer.Cms.Core.sql"),
                 Path.Combine(sqlDirectory, "EPiServer.Cms.Core.sql"), true);
-        }
-
-        private static void CreateStartPage()
-        {
-            var contentRepository = ServiceLocator.Current.GetInstance<IContentRepository>();
-            var startPage = contentRepository.GetDefault<StartPage>(ContentReference.RootPage);
-            startPage.Name = "Start page";
-            var startPageReference = contentRepository.Save(startPage, SaveAction.Publish, AccessLevel.NoAccess);
-            var siteSettings = SiteDefinition.Current.CreateWritableClone();
-            siteSettings.StartPage = startPageReference.ToPageReference();
-            SiteDefinition.Current = siteSettings;
         }
 
         public void OnAssemblyComplete()
