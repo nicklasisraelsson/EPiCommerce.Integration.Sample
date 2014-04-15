@@ -6,7 +6,6 @@ using EPiServer.Core;
 using EPiServer.DataAccess;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
-using FluentAssertions;
 using Machine.Specifications;
 using Mediachase.Commerce.Catalog;
 using Mediachase.Commerce.Catalog.Dto;
@@ -32,7 +31,7 @@ namespace EPiCommerce.Integration.Sample
         };
 
         private It Should_have_same_name_as_the_entry_from_ECF =
-            () => catalogContent.Name.Should().BeEquivalentTo(entry.CatalogEntry[0].Name);
+            () => catalogContent.Name.ShouldEqual(entry.CatalogEntry[0].Name);
     }
 
     public class When_saving_a_new_entry_under_a_catalog : TestBase
@@ -52,6 +51,6 @@ namespace EPiCommerce.Integration.Sample
         };
 
         private It Should_add_the_new_unpublished_entry_as_a_child_to_the_catalog =
-            () => newChildren.Count().Should().BeGreaterThan(oldChildren.Count());
+            () => newChildren.Count().ShouldBeGreaterThan(oldChildren.Count());
     }
 }

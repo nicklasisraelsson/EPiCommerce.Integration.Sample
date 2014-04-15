@@ -158,9 +158,6 @@
     <Reference Include="EPiServer.XForms">
       <HintPath>packages\EPiServer.CMS.Core.7.5.1003.0\lib\net40\EPiServer.XForms.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions">
-      <HintPath>packages\FluentAssertions.2.2.0.0\lib\net45\FluentAssertions.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -176,11 +173,16 @@
     <Reference Include="Lucene.Net">
       <HintPath>packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications">
-      <HintPath>packages\Machine.Specifications.0.7.0\lib\net45\Machine.Specifications.dll</HintPath>
+    <Reference Include="Machine.Specifications, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Machine.Specifications.0.8.1\lib\net45\Machine.Specifications.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications.Clr4">
-      <HintPath>packages\Machine.Specifications.0.7.0\lib\net45\Machine.Specifications.Clr4.dll</HintPath>
+    <Reference Include="Machine.Specifications.Clr4, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Machine.Specifications.0.8.1\lib\net45\Machine.Specifications.Clr4.dll</HintPath>
+    </Reference>
+    <Reference Include="Machine.Specifications.Should">
+      <HintPath>packages\Machine.Specifications.Should.0.7.1\lib\net45\Machine.Specifications.Should.dll</HintPath>
     </Reference>
     <Reference Include="Mediachase.BusinessFoundation">
       <HintPath>packages\EPiServer.Commerce.7.5.1002.0\lib\net40\Mediachase.BusinessFoundation.dll</HintPath>
