@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
+using System.Collections.Generic;
 
 namespace EPiCommerce.Integration.Sample.TestSupport
 {
@@ -11,18 +12,66 @@ namespace EPiCommerce.Integration.Sample.TestSupport
     {
         private const string ConnectionStringToMasterDb = "Data Source=(local);Database=master;Integrated Security=True";
 
+        private static readonly Dictionary<string, string> ConnectionStringToDbScriptMap = new Dictionary<string, string>{
+            {"EPiServerDB", "EPiServer.Cms.Core.sql"},
+            {"EcfSqlConnection", "EPiServer.Commerce.sql"}
+        };
+
+        private static string TargetDirectory { get; set; }
+
         public static void Initialize()
         {
-            DropSnapshots();
-            DropCmsDatabase();
-            DropCommerceDatabase();
-            CreateCmsDatabase();
-            CreateCommerceDatabase();
+            DropDatabases();
+            CreateDatabases();
         }
 
-        private static void CreateCmsDatabase()
+        public static void CreateBackups(string targetDirectory)
         {
-            CreateDatabase("EPiServerDB");
+            if (String.IsNullOrEmpty(targetDirectory))
+            {
+                throw new ArgumentNullException("targetDirectory");
+            }
+
+            TargetDirectory = targetDirectory;
+
+            ExecuteOnDatabases(CreateBackup);
+        }
+
+        public static void RestoreFromBackups()
+        {
+            ExecuteOnDatabases(RestoreFromBackup);
+        }
+
+        public static void DeleteBackups()
+        {
+            ExecuteOnDatabases(DeleteBackup);
+        }
+
+        private static void CreateDatabases()
+        {
+            ExecuteOnDatabases(CreateDatabase);
+            RunUpgradeScriptsOnCmsDatabase();
+        }
+
+        /// <summary>
+        /// Commerce provides required updates to CMS database. We need to apply them.
+        /// </summary>
+        private static void RunUpgradeScriptsOnCmsDatabase()
+        {
+            var upgradeScriptDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                             @"sql\upgrade\");
+            var upgradeScripts = Directory.EnumerateFiles(upgradeScriptDirectoryPath);
+            var cmsDbInfo = GetDbInfo("EPiServerDB");
+            using (var connection = new SqlConnection(cmsDbInfo.ConnectionString))
+            {
+                connection.Open();
+                foreach (var upgradeScript in upgradeScripts)
+                {
+                    var upgradeDbCmd = File.ReadAllText(upgradeScript);
+                    ExecuteNonQuery(connection, upgradeDbCmd);
+                }
+                connection.Close();
+            }
         }
 
         private static void CreateDatabase(string connectionStringId)
@@ -38,8 +87,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             using (var connection = new SqlConnection(dbInfo.ConnectionString))
             {
                 connection.Open();
-                AddCmsDbSchema(connection);
-                AddEPiServerCommonDbSchema(connection);
+                AddDbSchema(connection, connectionStringId);
                 connection.Close();
             }
         }
@@ -91,31 +139,13 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             ExecuteNonQuery(connection, addDbOwnerRoleCommand);
         }
 
-        private static void AddCmsDbSchema(SqlConnection connection)
+        private static void AddDbSchema(SqlConnection connection, string connectionStringId)
         {
-            var cmsSchemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                             @"sql\EPiServer.Cms.Core.sql");
-            var createDbCmd = File.ReadAllText(cmsSchemaPath);
+            var dbScriptName = ConnectionStringToDbScriptMap[connectionStringId];
+            var schemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                                             @"sql\" + dbScriptName);
+            var createDbCmd = File.ReadAllText(schemaPath);
             ExecuteNonQuery(connection, createDbCmd);
-        }
-
-        private static void AddEPiServerCommonDbSchema(SqlConnection connection)
-        {
-            var commonDb = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                                         @"sql\EPiServerCommon.sql"));
-            ExecuteNonQuery(connection, commonDb);
-        }
-
-        private static void CreateCommerceDatabase()
-        {
-            using (var connection = new SqlConnection(ConnectionStringToMasterDb))
-            {
-                connection.Open();
-                var createScriptPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                                                    @"sql\ECFDatabase_Create.sql");
-                var createEcfDb = File.ReadAllText(createScriptPath);
-                ExecuteNonQuery(connection, createEcfDb);
-            }
         }
 
         private static SqlConnectionStringBuilder GetDbInfo(string connectionStringId)
@@ -130,14 +160,9 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             server.ConnectionContext.ExecuteNonQuery(commandText);
         }
 
-        private static void DropCmsDatabase()
+        private static void DropDatabases()
         {
-            DropDatabase("EPiServerDB");
-        }
-
-        private static void DropCommerceDatabase()
-        {
-            DropDatabase("EcfSqlConnection");
+            ExecuteOnDatabases(DropDatabase);
         }
 
         private static void DropDatabase(string connectionStringId)
@@ -175,120 +200,72 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             ExecuteNonQuery(connection, dropUserCommand);
         }
 
-        private static string SnapshotDirectory { get; set; }
-
-        public static void CreateSnapshots(string snapshotDirectory)
+        private static void ExecuteOnDatabases(Action<string> action)
         {
-            SnapshotDirectory = snapshotDirectory;
-
-            var epiDbInfo = GetDbInfo("EPiServerDB");
-            var commerceDbInfo = GetDbInfo("EcfSqlConnection");
-
-            CreateSnapshot(epiDbInfo);
-            CreateSnapshot(commerceDbInfo);
+            foreach (var database in ConnectionStringToDbScriptMap.Keys)
+            {
+                action(database);
+            }
+            SqlConnection.ClearAllPools();
         }
 
-        private static void CreateSnapshot(SqlConnectionStringBuilder epiDbInfo)
+        private static void CreateBackup(string connectionStringId)
         {
-            var snapshotName = epiDbInfo.InitialCatalog + "_snapshot";
-            using (var con = new SqlConnection(ConnectionStringToMasterDb))
+            var dbInfo = GetDbInfo(connectionStringId);
+
+            using (var connection = new SqlConnection(dbInfo.ConnectionString))
             {
-                con.Open();
+                connection.Open();
 
-                var snapshotPath = SnapshotDirectory + "\\" + snapshotName + ".ss";
+                var filePath = GetBackupFilePath(dbInfo.InitialCatalog);
 
-                var createSnapshotCmd = string.Format(@"
-                    IF EXISTS (SELECT * FROM sys.databases WHERE NAME='{0}') 
-                    BEGIN
-                        DROP DATABASE {0};
-                    END
-                    CREATE DATABASE {0} ON
-                    ( NAME = {2}, FILENAME = '{3}')
-                    AS SNAPSHOT OF {1}
-                ", snapshotName,
-                epiDbInfo.InitialCatalog,
-                epiDbInfo.InitialCatalog, snapshotPath);
+                var command = new SqlCommand(string.Format(@"
+                    BACKUP DATABASE {1} TO DISK = '{0}'
+                    WITH FORMAT,
+                          MEDIANAME = '{1}_backup',
+                          NAME = 'Full Backup of {1}';
+                    
+                ", filePath,
+                dbInfo.InitialCatalog), connection);
 
-                ExecuteNonQuery(con, createSnapshotCmd);
+                command.ExecuteNonQuery();
 
-                con.Close();
-
-                SqlConnection.ClearAllPools();
+                connection.Close();
             }
         }
 
-        public static void RestoreFromSnapshot()
+        private static string GetBackupFilePath(string originalDbName)
         {
-            var epiDbInfo = GetDbInfo("EPiServerDB");
-            var commerceDbInfo = GetDbInfo("EcfSqlConnection");
-
-            RestoreFromSnapshot(epiDbInfo);
-            RestoreFromSnapshot(commerceDbInfo);
-            // since full-text indexing is not supported on DB snapshot, we need to create MetaDataFullTextQueriesCatalog to prevent error.
-            CreateMetaDataFullTextQueriesCatalog(commerceDbInfo.ConnectionString);
+            return TargetDirectory + "\\" + originalDbName + ".bak";
         }
 
-        private static void CreateMetaDataFullTextQueriesCatalog(string connectionString)
+        private static void RestoreFromBackup(string connectionStringId)
         {
-            using (var con = new SqlConnection(connectionString))
+            var epiDbInfo = GetDbInfo(connectionStringId);
+            using (var connection = new SqlConnection(ConnectionStringToMasterDb))
             {
-                con.Open();
-                ExecuteNonQuery(con, "create fulltext catalog MetaDataFullTextQueriesCatalog");
-                con.Close();
-                SqlConnection.ClearAllPools();
-            }
-        }
+                connection.Open();
 
-        private static void RestoreFromSnapshot(SqlConnectionStringBuilder epiDbInfo)
-        {
-            var snapshotName = epiDbInfo.InitialCatalog + "_snapshot";
-            using (var con = new SqlConnection(ConnectionStringToMasterDb))
-            {
-                con.Open();
+                var filePath = GetBackupFilePath(epiDbInfo.InitialCatalog);
 
-                var restoreCommand = string.Format(@"
+                var command = new SqlCommand(string.Format(@"
                 ALTER DATABASE {1} SET single_user WITH ROLLBACK IMMEDIATE;
-                RESTORE DATABASE {1} FROM DATABASE_SNAPSHOT = '{0}';
-                ALTER DATABASE {1} SET OFFLINE WITH ROLLBACK IMMEDIATE
-                ALTER DATABASE {1} SET ONLINE
+                RESTORE DATABASE {1} FROM DISK = '{0}' WITH REPLACE;
                 ALTER DATABASE {1} SET MULTI_USER WITH NO_WAIT;
-                ", snapshotName,epiDbInfo.InitialCatalog);
+                ", filePath,
+                epiDbInfo.InitialCatalog), connection);
 
-                ExecuteNonQuery(con, restoreCommand);
+                command.ExecuteNonQuery();
 
-                con.Close();
-
-                SqlConnection.ClearAllPools();
+                connection.Close();
             }
         }
 
-        public static void DropSnapshots()
+        private static void DeleteBackup(string connectionStringId)
         {
-            var epiDbInfo = GetDbInfo("EPiServerDB");
-            var commerceDbInfo = GetDbInfo("EcfSqlConnection");
-
-            DropSnapshot(epiDbInfo);
-            DropSnapshot(commerceDbInfo);
-        }
-
-        private static void DropSnapshot(SqlConnectionStringBuilder dbInfo)
-        {
-            var snapshotName = dbInfo.InitialCatalog + "_snapshot";
-            using (var con = new SqlConnection(ConnectionStringToMasterDb))
-            {
-                con.Open();
-                var dropCommand = string.Format(@"
-                    IF EXISTS (SELECT * FROM sys.databases WHERE NAME='{0}') 
-                    BEGIN
-                        DROP DATABASE {0};
-                    END", snapshotName);
-
-                ExecuteNonQuery(con, dropCommand);
-
-                con.Close();
-
-                SqlConnection.ClearAllPools();
-            }
+            var epiDbInfo = GetDbInfo(connectionStringId);
+            var filePath = GetBackupFilePath(epiDbInfo.InitialCatalog);
+            File.Delete(filePath);
         }
     }
 }
