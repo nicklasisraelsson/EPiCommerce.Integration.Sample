@@ -53,4 +53,9 @@ namespace EPiCommerce.Integration.Sample
         private It Should_add_the_new_unpublished_entry_as_a_child_to_the_catalog =
             () => newChildren.Count().ShouldBeGreaterThan(oldChildren.Count());
     }
+
+    public class When_accessing_the_campaign_root : TestBase
+    {
+        It Should_not_be_null = () => CampaignFolder.CampaignRoot.ShouldNotBeNull();
+    }
 }

@@ -74,9 +74,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
         {
             var fileMap = new ExeConfigurationFileMap { ExeConfigFilename = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile };
             var config = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
-
-            EPiServerFrameworkSection.ConfigurationInstance = config;
-            EPiServerDataStoreSection.ConfigurationInstance = config;
+            ConfigurationSource.Instance = new FileConfigurationSource(config);
         }
 
         private static void SetupHostingEnvironment(string applicationPath)

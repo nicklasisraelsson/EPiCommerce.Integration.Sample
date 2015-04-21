@@ -1,1 +1,0 @@
-These are the sql files used to create the EPiServer Commerce database. They will eventually be included in a nuget package the same way EPiServer CMS database is (see EPiServer.CMS.Core nuget package). These files should be removed as soon as the nuget packages are updated to include them.

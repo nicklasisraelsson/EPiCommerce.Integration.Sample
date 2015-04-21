@@ -36,7 +36,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
 
         private Establish context = () =>
         {
-            RestoreSnapShot();
+            RestoreBackups();
 
             PrincipalInfo.CurrentPrincipal = PrincipalInfo.CreatePrincipal("TestUser");
             new Global(); // The constructor in Global register the CMS routes.
@@ -63,13 +63,13 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             }
         };
 
-        private static void RestoreSnapShot()
+        private static void RestoreBackups()
         {
             for (int i = 0; i < 10; i++)
             {
                 try
                 {
-                    Database.RestoreFromSnapshot();
+                    Database.RestoreFromBackups();
                     break;
                 }
                 catch (Exception)
