@@ -16,7 +16,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
 
         private static readonly Dictionary<string, string> ConnectionStringToDbScriptMap = new Dictionary<string, string>{
             {"EPiServerDB", "EPiServer.Cms.Core.sql"},
-            {"EcfSqlConnection", "EPiServer.Commerce.sql"}
+            {"EcfSqlConnection", "EPiServer.Commerce.Core.sql"}
         };
 
         private static string TargetDirectory { get; set; }

@@ -45,8 +45,8 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             var commerceVersion = GetPackageVersion(_applicationPath, "EPiServer.Commerce.Core");
             File.Copy(
                 Path.Combine(_applicationPath,
-                             @"..\..\packages\EPiServer.Commerce.Core." + commerceVersion + @"\tools\EPiServer.Commerce.sql"),
-                Path.Combine(sqlDirectory, "EPiServer.Commerce.sql"), true);
+                             @"..\..\packages\EPiServer.Commerce.Core." + commerceVersion + @"\tools\EPiServer.Commerce.Core.sql"),
+                Path.Combine(sqlDirectory, "EPiServer.Commerce.Core.sql"), true);
         }
 
         private void CopyUpgradeScripts(string sqlDirectory)
