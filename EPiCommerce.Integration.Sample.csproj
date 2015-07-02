@@ -211,6 +211,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>packages\EPiServer.Commerce.Core.8.11.3\lib\net45\Mediachase.WebConsoleLib.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>packages\Microsoft.SqlServer.Scripting.11.0.2100.61\lib\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
@@ -279,6 +280,7 @@
     <Compile Include="TestSupport\AssemblyContext.cs" />
     <Compile Include="TestSupport\CatalogTestHelper.cs" />
     <Compile Include="TestSupport\Database.cs" />
+    <Compile Include="TestSupport\DatabaseScripts.cs" />
     <Compile Include="TestSupport\EPiServerInitializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestSupport\TestBase.cs" />

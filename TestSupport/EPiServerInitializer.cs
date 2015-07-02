@@ -116,6 +116,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             siteDefinition.Hosts.Add(new HostDefinition { Name = siteDefinition.SiteUrl.Authority });
             siteDefinition.Hosts.Add(new HostDefinition { Name = SiteDefinition.WildcardHostName });
             siteDefinitionRepository.Save(siteDefinition);
+            SiteDefinition.Current = siteDefinition;
         }
     }
 }
