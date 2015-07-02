@@ -22,11 +22,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
         public void OnAssemblyStart()
         {
             var applicationPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            if (!File.Exists(Path.Combine(applicationPath, "License.config")))
-            {
-                throw new LicenseException("You need to have a Licence.config to run these integration tests. " +
-                                           "Put a License.config in the project root and it will be copied when the project is built.");
-            }
             SetupDatabase(applicationPath);
             EPiServerInitializer.Initialize(applicationPath);
             DataContext.Current = new DataContext(ConfigurationManager.ConnectionStrings["EcfSqlConnection"].ConnectionString);

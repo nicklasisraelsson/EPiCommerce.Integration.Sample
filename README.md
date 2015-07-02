@@ -10,7 +10,6 @@ In order to run the tests you can use the runtests.bat file in the root of the p
 In order to run these tests you need the following:
 
  * The user running the tests also need to be an admin on the SQL server to be able to create the databases.
- * An EPiServer license in the project root. Download one from [EPiServer License center](https://license.episerver.com/).
 
 ## Usage
 Any new specs must inherit from the EPiCommerce.Integration.Sample.TestSupport.TestBase class as can be seen from the included example spec.
