@@ -5,6 +5,8 @@ using System.IO;
 using Microsoft.SqlServer.Management.Common;
 using Microsoft.SqlServer.Management.Smo;
 using System.Collections.Generic;
+using Microsoft.Build.Utilities;
+using System.Diagnostics;
 
 namespace EPiCommerce.Integration.Sample.TestSupport
 {
@@ -14,13 +16,15 @@ namespace EPiCommerce.Integration.Sample.TestSupport
 
         private static readonly Dictionary<string, string> ConnectionStringToDbScriptMap = new Dictionary<string, string>{
             {"EPiServerDB", "EPiServer.Cms.Core.sql"},
-            {"EcfSqlConnection", "EPiServer.Commerce.sql"}
+            {"EcfSqlConnection", "EPiServer.Commerce.Core.sql"}
         };
 
         private static string TargetDirectory { get; set; }
 
-        public static void Initialize()
+        public static void Initialize(string applicationPath)
         {
+            var databaseScripts = new DatabaseScripts(applicationPath);
+            databaseScripts.CopySqlScripts();
             DropDatabases();
             CreateDatabases();
         }
@@ -51,6 +55,8 @@ namespace EPiCommerce.Integration.Sample.TestSupport
         {
             ExecuteOnDatabases(CreateDatabase);
             RunUpgradeScriptsOnCmsDatabase();
+            ApplyAspNetMembershipProviderScripts();
+            ApplyWindowsWorkflowFoundationScripts();
         }
 
         /// <summary>
@@ -266,6 +272,67 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             var epiDbInfo = GetDbInfo(connectionStringId);
             var filePath = GetBackupFilePath(epiDbInfo.InitialCatalog);
             File.Delete(filePath);
+        }
+
+        private static void ApplyAspNetMembershipProviderScripts()
+        {
+            var frameworkPath =
+               ToolLocationHelper.GetPathToDotNetFramework(TargetDotNetFrameworkVersion.Version20, DotNetFrameworkArchitecture.Bitness32);
+
+            var command =
+                Path.Combine(frameworkPath, "aspnet_regsql.exe");
+
+            var database =
+                GetDbInfo("EPiServerDB");
+
+            var arguments =
+                string.Format("-S {0} -d {1} -E -A all", database.DataSource, database.InitialCatalog);
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    Arguments = arguments,
+                    CreateNoWindow = true,
+                    FileName = command,
+                    UseShellExecute = false
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+        }
+
+        private static void ApplyWindowsWorkflowFoundationScripts()
+        {
+            var workflowFoundationScripts = new[]
+            {
+                "SqlPersistenceService_Schema",
+                "SqlPersistenceService_Logic"
+            };
+
+            var scriptsPath =
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sql");
+
+            var cmsDatabase = GetDbInfo("EPiServerDB");
+
+            using (var connection = new SqlConnection(ConnectionStringToMasterDb))
+            {
+                connection.Open();
+                connection.ChangeDatabase(cmsDatabase.InitialCatalog);
+
+                foreach (var workflowFoundationScript in workflowFoundationScripts)
+                {
+                    var scriptPath =
+                        Path.Combine(scriptsPath, workflowFoundationScript + ".sql");
+
+                    var script = File.ReadAllText(scriptPath);
+
+                    ExecuteNonQuery(connection, script);
+                }
+
+                connection.Close();
+            }
         }
     }
 }
