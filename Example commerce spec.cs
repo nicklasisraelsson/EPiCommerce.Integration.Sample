@@ -6,9 +6,9 @@ using EPiServer.Core;
 using EPiServer.DataAccess;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
-using Machine.Specifications;
 using Mediachase.Commerce.Catalog;
 using Mediachase.Commerce.Catalog.Dto;
+using Xunit;
 
 namespace EPiCommerce.Integration.Sample
 {
@@ -16,8 +16,8 @@ namespace EPiCommerce.Integration.Sample
     {
         private static CatalogContentBase catalogContent;
         private static CatalogEntryDto entry;
-
-        private Establish context = () =>
+        
+        public When_saving_and_getting_a_catalog_entry_with_datafactory()
         {
             var parentLink = ReferenceConverter.GetContentLink(CatalogTestHelper.DefaultCatalogNodeId,
                                                                CatalogContentType.CatalogNode, 0);
@@ -28,17 +28,21 @@ namespace EPiCommerce.Integration.Sample
             var catalogSystem = ServiceLocator.Current.GetInstance<ICatalogSystem>();
             entry = catalogSystem.GetCatalogEntryDto(entryId);
             catalogContent = ContentRepository.Get<CatalogContentBase>(variationLink);
-        };
-
-        private It Should_have_same_name_as_the_entry_from_ECF =
-            () => catalogContent.Name.ShouldEqual(entry.CatalogEntry[0].Name);
+        }
+        
+        [Fact]
+        public void It_should_have_same_name_as_the_entry_from_ECF()
+        {
+            Assert.Equal(catalogContent.Name, entry.CatalogEntry[0].Name);
+        }
     }
 
     public class When_saving_a_new_entry_under_a_catalog : TestBase
     {
         private static IEnumerable<CatalogContentBase> newChildren;
         private static IEnumerable<CatalogContentBase> oldChildren;
-        private Establish context = () =>
+
+        public When_saving_a_new_entry_under_a_catalog()
         {
             var parentLink = ReferenceConverter.GetContentLink(CatalogTestHelper.RootCatalogId,
                                                                CatalogContentType.Catalog, 0);
@@ -48,14 +52,21 @@ namespace EPiCommerce.Integration.Sample
             ContentRepository.Save(newEntry, SaveAction.Save, AccessLevel.NoAccess);
             // We need to specify a language selector, otherwise non published content will not be included.
             newChildren = ContentRepository.GetChildren<CatalogContentBase>(parentLink, LanguageSelector.MasterLanguage()); 
-        };
+        }
 
-        private It Should_add_the_new_unpublished_entry_as_a_child_to_the_catalog =
-            () => newChildren.Count().ShouldBeGreaterThan(oldChildren.Count());
+        [Fact]
+        public void It_should_add_the_new_unpublished_entry_as_a_child_to_the_catalog()
+        {
+            Assert.NotInRange(newChildren.Count(), 0, oldChildren.Count());
+        }
     }
 
     public class When_accessing_the_campaign_root : TestBase
     {
-        It Should_not_be_null = () => CampaignFolder.CampaignRoot.ShouldNotBeNull();
+        [Fact]
+        public void Should_not_be_null()
+        {
+            Assert.NotNull(CampaignFolder.CampaignRoot);
+        }
     }
 }

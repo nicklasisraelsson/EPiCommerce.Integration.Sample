@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Threading;
-using EPiServer;
+﻿using EPiServer;
 using EPiServer.Core;
 using EPiServer.Data.Dynamic;
 using EPiServer.DataAnnotations;
@@ -10,7 +7,6 @@ using EPiServer.Framework.Initialization;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
-using Machine.Specifications;
 using Mediachase.Commerce.Catalog;
 using Mediachase.Commerce.Customers;
 using Mediachase.Commerce.Initialization;
@@ -18,11 +14,15 @@ using Mediachase.Commerce.Marketing;
 using Mediachase.Commerce.Orders;
 using Mediachase.Commerce.Security;
 using StructureMap;
+using System;
+using System.Reflection;
+using System.Threading;
+using Xunit;
 using InitializationModule = EPiServer.Framework.Initialization.InitializationModule;
 
 namespace EPiCommerce.Integration.Sample.TestSupport
 {
-    public class TestBase
+    public class TestBase : IClassFixture<TestFixture>
     {
         protected static ReferenceConverter ReferenceConverter
         {
@@ -33,17 +33,24 @@ namespace EPiCommerce.Integration.Sample.TestSupport
         {
             get { return ServiceLocator.Current.GetInstance<IContentRepository>(); }
         }
+    }
 
-        private Establish context = () =>
+    public class TestFixture : IDisposable
+    {
+        public TestFixture()
         {
+            WaitForFrameworkInitialization();
             RestoreBackups();
-
             PrincipalInfo.CurrentPrincipal = PrincipalInfo.CreatePrincipal("TestUser");
             new Global(); // The constructor in Global register the CMS routes.
-        };
+        }
 
-        
-        private Cleanup after = () =>
+        private void WaitForFrameworkInitialization()
+        {
+            AssemblyContext.Current.Initialize();
+        }
+
+        public void Dispose()
         {
             ReInitializeCommerceInitializationModule();
             DataFactoryCache.Clear();
@@ -61,7 +68,7 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             {
                 cache.Clear();
             }
-        };
+        }
 
         private static void RestoreBackups()
         {

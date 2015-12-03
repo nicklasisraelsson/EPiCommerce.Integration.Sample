@@ -10,7 +10,6 @@ using EPiServer.Licensing;
 using EPiServer.Security;
 using EPiServer.ServiceLocation;
 using EPiServer.Web;
-using Machine.Specifications;
 using Mediachase.BusinessFoundation.Data;
 using Mediachase.Commerce.Assets;
 using Mediachase.Commerce.Orders;
@@ -18,10 +17,26 @@ using Microsoft.Build.Utilities;
 
 namespace EPiCommerce.Integration.Sample.TestSupport
 {
-    public class AssemblyContext : IAssemblyContext
+    /// <summary>
+    /// Shamelessly stolen from http://stackoverflow.com/questions/13829737/xunit-run-code-before-and-after-all-tests/14950904#14950904
+    /// </summary>
+    public sealed class AssemblyContext
     {
-        public void OnAssemblyStart()
+        private static readonly Lazy<AssemblyContext> _lazyInstance =
+            new Lazy<AssemblyContext>(() => new AssemblyContext());
+
+        private bool _initialized;
+
+        public static AssemblyContext Current { get { return _lazyInstance.Value; } }
+
+        private AssemblyContext() { }
+
+        public void Initialize()
         {
+            if (_initialized)
+            {
+                return;
+            }
             var applicationPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             Database.Initialize(applicationPath);
             EPiServerInitializer.Initialize(applicationPath);
@@ -33,10 +48,17 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             var thisCallIsOnlyUsedToMakeSureTheOrderContextIsAutomaticallyInstalled = OrderContext.Current;
             CatalogTestHelper.Initialize();
             Database.CreateBackups(applicationPath);
+            _initialized = true;
         }
 
-        public void OnAssemblyComplete()
+        ~AssemblyContext()
         {
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
             Database.DeleteBackups();
             if (DataContext.Current != null)
             {
