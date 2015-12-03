@@ -28,7 +28,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             CopyCmsDatabase(sqlDirectory);
             CopyCommerceDatabase(sqlDirectory);
             CopyUpgradeScripts(sqlDirectory);
-            CopyWindowsWorkflowFoundationScripts(sqlDirectory);
         }
 
         private void CopyCmsDatabase(string sqlDirectory)
@@ -65,26 +64,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             {
                 File.Copy(upgradeScript.FullName,
                      Path.Combine(upgradeScriptsDestinationDirectoryPath, upgradeScript.Name), true);
-            }
-        }
-
-        private static void CopyWindowsWorkflowFoundationScripts(string sqlDirectory)
-        {
-            var frameworkPath =
-                ToolLocationHelper.GetPathToDotNetFramework(TargetDotNetFrameworkVersion.Version30, DotNetFrameworkArchitecture.Bitness32);
-
-            var scriptsPath =
-                Path.Combine(frameworkPath, @"Windows Workflow Foundation\SQL\en");
-
-            foreach (var script in Directory.GetFiles(scriptsPath, "SqlPersistenceService_*.sql"))
-            {
-                var scriptName =
-                   Path.GetFileName(script);
-
-                var destinationScript =
-                    Path.Combine(sqlDirectory, scriptName);
-
-                File.Copy(script, destinationScript, true);
             }
         }
 

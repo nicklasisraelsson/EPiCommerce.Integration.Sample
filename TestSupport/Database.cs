@@ -56,7 +56,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
             ExecuteOnDatabases(CreateDatabase);
             RunUpgradeScriptsOnCmsDatabase();
             ApplyAspNetMembershipProviderScripts();
-            ApplyWindowsWorkflowFoundationScripts();
         }
 
         /// <summary>
@@ -301,38 +300,6 @@ namespace EPiCommerce.Integration.Sample.TestSupport
 
             process.Start();
             process.WaitForExit();
-        }
-
-        private static void ApplyWindowsWorkflowFoundationScripts()
-        {
-            var workflowFoundationScripts = new[]
-            {
-                "SqlPersistenceService_Schema",
-                "SqlPersistenceService_Logic"
-            };
-
-            var scriptsPath =
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sql");
-
-            var cmsDatabase = GetDbInfo("EPiServerDB");
-
-            using (var connection = new SqlConnection(ConnectionStringToMasterDb))
-            {
-                connection.Open();
-                connection.ChangeDatabase(cmsDatabase.InitialCatalog);
-
-                foreach (var workflowFoundationScript in workflowFoundationScripts)
-                {
-                    var scriptPath =
-                        Path.Combine(scriptsPath, workflowFoundationScript + ".sql");
-
-                    var script = File.ReadAllText(scriptPath);
-
-                    ExecuteNonQuery(connection, script);
-                }
-
-                connection.Close();
-            }
         }
     }
 }
